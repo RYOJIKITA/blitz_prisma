@@ -1,0 +1,24 @@
+version: "3.0"
+
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: blitz_prisma
+    volumes:
+      - ./tmp/db:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    command: bash -c "yarn start -p 3000"
+    volumes:
+      - .:/blitz_prisma
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://root:admin@localhost:5432/blitz_prisma
+    depends_on:
+      - db
